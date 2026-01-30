@@ -147,4 +147,6 @@ def train_model(
     )
     print("Testing complete")
 
-    return model_losses_step, model_losses_average, model_metrics_epoch, model_metrics_total
+    model_dict = {'losses_step': model_losses_step, 'losses_average': model_losses_average, 'metrics_epoch': model_metrics_epoch, 'metrics_total': model_metrics_total}
+
+    return model_dict
