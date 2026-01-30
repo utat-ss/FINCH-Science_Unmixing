@@ -1,4 +1,6 @@
 import torch
+import torch.nn as nn
+from torch.utils.flop_counter import FlopCounterMode
 from sklearn.metrics import r2_score
 import numpy as np
 
@@ -11,24 +13,46 @@ def get_n_params(model):
         pp += nn
     return pp
 
-def get_r2(ab_true:(torch.Tensor), ab_pred:(torch.Tensor), mode:(str)) -> dict:
+def get_flops(model:(nn.Module), i_shape:(torch.Tensor)):
+    """
+    Gets the flops of a model
+
+    Args:
+        model (nn.Module): The model of interest
+        i_shape (torch.Tensor): A tensor with the input shape that matches with the model (B, ch, seq) or (B, seq)
+
+    Returns:
+        flops_per_sample (int): The number of flops per sample
+    """
+    flop_counter = FlopCounterMode(display=False)
+    flop_tensor = torch.ones(size=i_shape, dtype=torch.float32, device=next(model.parameters()).device)
+    with flop_counter:
+        model(flop_tensor)
+    flops_per_sample = flop_counter.get_total_flops()
+    return flops_per_sample/i_shape[0]
+
+def get_r2(ab_true:(np.ndarray), ab_pred:(np.ndarray)) -> np.ndarray:
     """
     Takes in the true and predicted abundances, returns a list of R^2 related stuff and linreg related stuff.
     Both ab_true and ab_pred must be detached
 
     Returns:
-        r2_metrics (dict): The r2 values in keys 'total', 'gv', 'npv', 'soil'
+        r2_metrics (np.ndarray): In the form [total, gv, npv, soil]
     """
-    if mode not in ['val', 'test']:
-        raise ValueError(f"Unknown/Unsupported r2 mode: {mode}")
-    em_list = [f'general/{mode}_gv_r2', f'general/{mode}_npv_r2', f'general/{mode}_soil_r2']
-
-    ab_true = ab_true.cpu().numpy()
-    ab_pred = ab_pred.cpu().numpy()
-    temp = r2_score(ab_true, ab_pred, multioutput='raw_values').tolist()
-
-    r2_metrics = {f'general/{mode}_total_r2': np.mean(temp)}
-    for i, j in zip(em_list, temp):
-        r2_metrics[i] = j
-
+    individual = r2_score(ab_true, ab_pred, multioutput='raw_values')
+    total = np.mean(individual)
+    r2_metrics = np.array([total, individual[0], individual[1], individual[2]])
     return r2_metrics
+
+def get_mae(ab_true:(np.ndarray), ab_pred:(np.ndarray)) -> np.ndarray:
+    """
+    Takes in the true and predicted abundances, returns a list of MAE related stuff.
+    Both ab_true and ab_pred must be detached
+
+    Returns:
+        mae_metrics (np.ndarray): In the form [total, gv, npv, soil]
+    """
+    individual = np.mean(np.abs(ab_true - ab_pred), axis=0)
+    total = np.mean(individual)
+    mae_metrics = np.array([total, individual[0], individual[1], individual[2]])
+    return mae_metrics

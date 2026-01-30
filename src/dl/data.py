@@ -124,4 +124,4 @@ def get_data(save_path:(str), spec_range:(list[int]), seed:(int)=3169, n_train:(
         shuffle=False,
     )
 
-    return [dl_train, dl_val, dl_test]
+    return [get_inf_iterator(dl_train), get_inf_iterator(dl_val), iter(dl_test)]
