@@ -5,6 +5,7 @@ import torch.optim as optim
 import numpy as np
 
 from src.dl.metric import get_n_params, get_flops, get_r2, get_mae
+from src.dl.plotting import plot_preds, plot_avg_losses, plot_metrics, plot_train_losses, pareto_plot
 
 def train_model(
     model:(nn.Module), 
@@ -16,8 +17,8 @@ def train_model(
     n_tb_epoch:(int), 
     device:(torch.device), 
     dtype:(torch.dtype), 
-    model_save:(str), 
-    test_save:(str)
+    save_dir:(str),
+    model_name:(str),
 ):
     """
     This is the function which trains the critic model on ksi_train (synthesized from psi_1), then validates and tests on ksi_val and ksi_test (parts of psi_2).
@@ -93,7 +94,7 @@ def train_model(
         # Save the critic if it is the best as per loss
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(model.state_dict(), model_save)
+            torch.save(model.state_dict(), rf'{save_dir}\model_weights.pth')
             best_model_state = model.state_dict()
         print(f"Epoch {epoch}/{n_epoch} complete. Train Loss: {model_losses_average[epoch-1,0]:.6f}, Val Loss: {model_losses_average[epoch-1,1]:.6f}")
 
@@ -116,10 +117,30 @@ def train_model(
         r2_array = get_r2(pred_abundances.cpu().numpy(), abundances.cpu().numpy())
         mae_array = get_mae(pred_abundances.cpu().numpy(), abundances.cpu().numpy())
         model_metrics_total[0,2:] = np.array([test_loss.item(), r2_array[0], r2_array[1], r2_array[2], r2_array[3], mae_array[0], mae_array[1], mae_array[2], mae_array[3]])
-
+   
+    plot_preds(
+        pred_abundances.cpu().numpy(), 
+        abundances.cpu().numpy(),
+        save_path=rf'{save_dir}\abundance_plot.svg',
+        model_name=model_name,
+        npv_bestfit=True
+    )
+    plot_metrics(
+        list(range(1, epoch + 1)),
+        model_metrics_epoch[:,:5],
+        metric_names=['Validation Loss', 'Total R2', 'GV R2', 'NPV R2', 'Soil R2'],
+        save_path=rf'{save_dir}\metrics.svg',
+        model_name=model_name
+    )
+    plot_avg_losses(
+        list(range(1, epoch + 1)),
+        model_losses_average, 
+        rf'{save_dir}\avg_losses.svg', 
+        model_name=model_name
+    )
     # Save the test abundance array of shape (n_test_samples, 6)
     np.savez_compressed(
-        test_save,
+        rf'{save_dir}\test_abundances.pth',
         pred_abundances=pred_abundances.cpu().numpy(),
         true_abundances=abundances.cpu().numpy(),
         orig_index=orig_index

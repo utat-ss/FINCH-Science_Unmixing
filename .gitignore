@@ -2,7 +2,6 @@
 __pycache__/
 *.py[cod]
 *.log
-*.pth
 *.pkl
 *.pt
 *.onnx
