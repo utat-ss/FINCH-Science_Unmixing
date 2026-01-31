@@ -119,11 +119,10 @@ def train_model(
         model_metrics_total[0,2:] = np.array([test_loss.item(), r2_array[0], r2_array[1], r2_array[2], r2_array[3], mae_array[0], mae_array[1], mae_array[2], mae_array[3]])
    
     plot_preds(
-        pred_abundances.cpu().numpy(), 
         abundances.cpu().numpy(),
+        pred_abundances.cpu().numpy(), 
         save_path=rf'{save_dir}\abundance_plot.svg',
         model_name=model_name,
-        npv_bestfit=True
     )
     plot_metrics(
         list(range(1, epoch + 1)),

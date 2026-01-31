@@ -59,6 +59,7 @@ class FNO_nD(nn.Module):
         # Initialize Fourier Block
         self.fb_in = cfg_p['out_channels']
         self.fb_out = cfg_q['in_channels']
+        self.q_out = cfg_q['out_channels']
 
         assert len(fb_kernel) == len(fb_modes), 'Fourier Block kernel and modes lists have to be same len.'
         assert len(fb_hidden_channels) + 1 == len(fb_kernel), 'Hidden channel list has to be 1 less than kernel list in ken.'
@@ -118,25 +119,38 @@ class FNO_nD(nn.Module):
 
         self.FourierBlock = nn.Sequential(*self.FourierBlock)
 
-    def forward(self, input:(torch.tensor)):
+        self.final_proj = nn.Sequential(
+            nn.AdaptiveAvgPool1d(1),
+            nn.Flatten(start_dim=1), 
+            nn.Linear(self.q_out, 64),
+            nn.GELU(),
+            nn.Linear(64, 3)
+        )
+
+    def init_weights(self, m):
+        if isinstance(m, nn.Linear):
+            # Using a smaller gain for the very last layer 
+            # keeps initial predictions from being too extreme
+            nn.init.xavier_uniform_(m.weight, gain=0.01)
+            nn.init.zeros_(m.bias)
+
+    def forward(self, x:(torch.Tensor)):
 
         """
         Forward prop for the FNO_nD class. Elevates channel dim using P net, applies Fourier Blocks, lowers channel dim using Q net.
         
         Args:
-            input: An input of size (Batch, In_Channels, d1, ..., dn)
+            x: An input of size (Batch, In_Channels, d1, ..., dn)
 
         Returns:
             output: An output of size (Batch, Out_Channels, d1, ..., dn)
         """
-
-        # Put it through the p network first
-        input = self.P_Net(input)
-
-        # Then through the fourier blocks
-        input = self.FourierBlock(input)
-
-        # Lastly through the q network, return the result
-        return self.Q_Net(input)
-
+        if x.ndim == 2: x = x.unsqueeze(1)
+        x = self.P_Net(x)
+        x = self.FourierBlock(x)
+        x = self.Q_Net(x)
+        x = self.final_proj(x)
+        #x = (torch.tanh(x) + 1) / 2
+        return x #/ (torch.sum(x, dim=1, keepdim=True) + 1e-12)
+    
 #endregion

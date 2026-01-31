@@ -180,6 +180,7 @@ def plot_metrics(epochs: (np.ndarray), metrics:(np.ndarray), metric_names:(list[
     # Finish the plot
     plt.xlabel('Epoch')
     plt.ylabel('Metric')
+    plt.ylim(top=1.2, bottom=-5)
     plt.title(f"{model_name}, Metrics per Validation in Epochs")
     plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', frameon=False)
     plt.grid(True)
