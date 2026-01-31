@@ -13,3 +13,4 @@ venv/
 
 # Logs and outputs
 *.log
+runs/dl/simpler_data/fno/fno_256/model_weights.pth

@@ -150,7 +150,7 @@ class FNO_nD(nn.Module):
         x = self.FourierBlock(x)
         x = self.Q_Net(x)
         x = self.final_proj(x)
-        #x = (torch.tanh(x) + 1) / 2
-        return x #/ (torch.sum(x, dim=1, keepdim=True) + 1e-12)
+        x = (torch.tanh(x) + 1) / 2
+        return x / (torch.sum(x, dim=1, keepdim=True) + 1e-12)
     
 #endregion
