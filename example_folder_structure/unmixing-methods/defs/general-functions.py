@@ -16,8 +16,7 @@ NPV_COLUMN = 1
 
 
 def prepare_ds(file: str = 'simpler_data.csv', test_size: float = 0.2) -> np.ndarray:
-    """
-    Return the normalized dataset in  <file> as an array, split with test size <test size>.
+    """Return the normalized dataset in  <file> as an array, split with test size <test size>.
 
     Note: Normalization to mean 0 and standard deviation 1 is done based on the mean and st. dev.
     of the training data only to avoid data leakage, but is applied to both training and testing.
@@ -43,8 +42,7 @@ def prepare_ds(file: str = 'simpler_data.csv', test_size: float = 0.2) -> np.nda
 
 
 def evaluate_model(predicted_value: np.ndarray, true_value: np.ndarray, p: bool) -> tuple[float]:
-    """
-    Return (and print if <p>) the rmse, r2 and r2 of y = x of <true_value> vs <predicted_value>
+    """Return (and print if <p>) the rmse, r2 and r2 of y = x of <true_value> vs <predicted_value>
     """
     rmse = np.sqrt(np.mean((true_value - predicted_value) ** 2))
     rmse_npv = np.sqrt(np.mean((true_value[:, NPV_COLUMN] - predicted_value[:, NPV_COLUMN]) ** 2))
@@ -68,8 +66,7 @@ def evaluate_model(predicted_value: np.ndarray, true_value: np.ndarray, p: bool)
 
 def plot_preds(ab_true: np.ndarray, ab_pred: np.ndarray, npv_bestfit: bool = True,
                save_path: str = None) -> None:
-    """
-    Function to plot predicted vs true abundances for three classes. Optionally bestfits for the npv.
+    """Plot predicted vs true abundances for three classes. Optionally bestfits for the npv.
 
     Args:
         ab_true (np.ndarray): True abundances, shape (n_samples, 3)
