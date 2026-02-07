@@ -21,7 +21,7 @@ def prepare_ds(file: str = 'simpler_data.csv', test_size: float = 0.2) -> np.nda
     Note: Normalization to mean 0 and standard deviation 1 is done based on the mean and st. dev.
     of the training data only to avoid data leakage, but is applied to both training and testing.
 
-    The returns are all pandas dataframes with the following shapes:
+    The returns are all numpy arrays with the following shapes:
     x_train: (1378, 81)
     x_test: (345, 81)
     y_train: (1378, 3)
