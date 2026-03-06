@@ -1,23 +1,13 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
-from sklearn.datasets import make_regression
 from sklearn.metrics import root_mean_squared_error
 import matplotlib.pyplot as plt
 from sklearn.metrics import r2_score
-from sklearn import datasets
-from sklearn import svm
-from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import cross_validate
-from sklearn.metrics import recall_score
-from sklearn.model_selection import ShuffleSplit
 from sklearn.model_selection import KFold
-from sklearn.model_selection import StratifiedKFold
 from sklearn.gaussian_process import GaussianProcessRegressor
-from sklearn.gaussian_process.kernels import DotProduct, WhiteKernel, RBF, RationalQuadratic
-import math
+from sklearn.gaussian_process.kernels import RationalQuadratic
 
 #getting the data to train on
 file = pd.read_csv('simpler_data.csv')
