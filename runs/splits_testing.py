@@ -8,9 +8,9 @@ from sklearn.metrics import r2_score
 from sklearn.model_selection import KFold
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RationalQuadratic
-
+from sklearn.ensemble import RandomForestRegressor
 #getting the data to train on
-file = pd.read_csv('simpler_data.csv')
+file = pd.read_csv('isprs_26_new.csv')
 #getting y's   
 y = []
 for i in range(len(file["Spectra"])):
@@ -20,7 +20,7 @@ for i in range(len(file["Spectra"])):
 x = []
 for i in range(len(file["Spectra"])):
     newAr = []
-    for j in range(900,1710,10):
+    for j in range(900,1700,10):
         newAr.append(file.loc[i,str(j)])
     x.append(newAr)
 print(len(x))
@@ -28,9 +28,7 @@ print(len(x))
 
 #spliting the data
 def k_split_dataset(X: int, Y: int, train_size_percentage: int) -> list[list[list]]:
-    """Return kfold splits
     
-    """
     kfold = KFold(n_splits=train_size_percentage, shuffle= True, random_state=42)
 
     ids = range(len(X))
@@ -67,9 +65,6 @@ all_splits = []
 get_all_splits(2, 20, all_splits)
 
 def find_the_most_optimal_k_splits(all_splits: list[int], r2s: list[int]) -> None:
-   """Find r^2 for different splitting using kfold. However, choose the best one among splits with n folds.
-  As a regression function, there can be any other
-  """
     splitnum = 2
     for i in all_splits:
         bestr2 = -1
@@ -80,7 +75,7 @@ def find_the_most_optimal_k_splits(all_splits: list[int], r2s: list[int]) -> Non
                 #splitting the dataset
             X_train, X_test, y_train, y_test = j[0], j[1], j[2], j[3]
                 #choosing regression type and training
-            regr = GaussianProcessRegressor(kernel=RationalQuadratic(), random_state=42)
+            regr = RandomForestRegressor(random_state=42)
             regr.fit(X_train, y_train)
             y_predict = regr.predict(X_test)
                 #getting results
@@ -94,14 +89,10 @@ def find_the_most_optimal_k_splits(all_splits: list[int], r2s: list[int]) -> Non
         r2s.append(bestr2)
         splitnum+=1
 
-def find_randomsplit(r2s: list[int]) -> None:
-  """Find r^2 for different splitting using randomsplit
-  As a regression function, there can be any other
-  """
-  
+def find_the_most_optimal_randomsplit(r2s: list[int]) -> None:
     for i in range(10,100,5):
         X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=1-i/100, train_size=i/100, random_state=42)
-        regr = LinearRegression()
+        regr = RandomForestRegressor(random_state=42)
         regr.fit(X_train, y_train)
         y_predict = regr.predict(X_test)
         rmse = root_mean_squared_error(y_test, y_predict)
@@ -110,13 +101,14 @@ def find_randomsplit(r2s: list[int]) -> None:
         print("train_size: "+str(i)+"%, r2: "+str(r2)+", rmse: "+str(rmse))
 
 
-find_the_most_optimal_k_splits(all_splits, r2s)
+#find_the_most_optimal_k_splits(all_splits, r2s)
+find_the_most_optimal_randomsplit(r2s)
 plt.rcParams["font.family"] = "Times New Roman"
 
 csfont = {'fontname':'Times New Roman'}
-plt.plot(range(2,20),r2s)
+plt.plot(range(10,100,5),r2s)
 plt.title("R^2 vs Train Size", **csfont)
-plt.xlabel("Train Size(# of splits)", **csfont)
+plt.xlabel("Train Size (%)", **csfont)
 plt.ylabel("R^2", **csfont)
 plt.grid(True)
 plt.tight_layout()
