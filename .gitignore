@@ -14,3 +14,7 @@ venv/
 # Logs and outputs
 *.log
 runs/dl/simpler_data/fno/fno_256/model_weights.pth
+runs/dl/atmo_data/mlp_128_4layer/results/*/
+runs/dl/atmo_data/fno_128/results/*/
+runs/dl/atmo_data/fno_16/results/*/
+runs/dl/atmo_data/fno_64/results/*/
