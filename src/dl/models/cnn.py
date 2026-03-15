@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 class CNN(nn.Module):
-    def __init__(self, hidden_ch:(list[int]), in_dim:(int)=81, out_dim:(int)=3, dropout:(float)=0.05, leaky_slope:(float)=0.2):
+    def __init__(self, hidden_ch:(list[int]), in_dim:(int)=80, out_dim:(int)=3, dropout:(float)=0.05, leaky_slope:(float)=0.2):
         super().__init__()
         assert len(hidden_ch) <=7, 'Hidden channel list must have at most 7 elements'
 

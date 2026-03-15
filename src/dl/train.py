@@ -37,7 +37,7 @@ def train_model(
 
     # Initial logs and losses
     model_metrics_total[0,0] = get_n_params(model)
-    model_metrics_total[0,1] = get_flops(model, i_shape=(4, 81))
+    model_metrics_total[0,1] = get_flops(model, i_shape=(4, 80))
     best_val_loss = float('inf')
 
     # Log the param amount of the critic
@@ -139,7 +139,7 @@ def train_model(
     )
     # Save the test abundance array of shape (n_test_samples, 6)
     np.savez_compressed(
-        rf'{save_dir}\test_abundances.pth',
+        rf'{save_dir}\test_abundances',
         pred_abundances=pred_abundances.cpu().numpy(),
         true_abundances=abundances.cpu().numpy(),
         orig_index=orig_index
