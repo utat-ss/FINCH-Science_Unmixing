@@ -24,9 +24,6 @@ To perform both unmixing and determine requirements, the Unmixing sub-team of th
     - Convolutional Neural Network (CNN)
     - Fourier Neural Operator (FNO)
 
-For the ISPRS publication, the following models are not explored. For more information about them, please check the main branch.
-- FCLS, BNN, P-MLP
-
 ## Test Metric
 There are widely accepted and applied testing metrics to evaluate hyperspectral unmixing models under certain data constraints or conditions:
 - $R^{2}$ (coefficient of determination) of a linear regression on ground truth vs model prediction plots of each endmember class
