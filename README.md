@@ -23,10 +23,6 @@ To perform both unmixing and determine requirements, the Unmixing sub-team of th
     - Multi-Layered Perceptron (MLP)
     - Convolutional Neural Network (CNN)
     - Fourier Neural Operator (FNO)
-- Probabilistic Deep Learning:
-    - Gaussian Deep Learning models:
-        - Bayesian Neural Networks (BNN)
-        - Probabilistic MLP (P-MLP)
 
 For the ISPRS publication, the following models are not explored. For more information about them, please check the main branch.
 - FCLS, BNN, P-MLP
