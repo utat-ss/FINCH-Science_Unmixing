@@ -5,6 +5,7 @@ import re
 import scipy
 from sklearn import linear_model
 import matplotlib as mpl
+import mpltern
 plt = mpl.pyplot
 
 """
@@ -120,3 +121,48 @@ def plot_preds(ab_true:(np.ndarray), ab_pred:(np.ndarray), save_path:(str), mode
     plt.tight_layout()
     plt.savefig(save_path, format='svg')
     plt.show()
+
+def ternary_abundances(ab_true:(np.ndarray | pd.DataFrame), ab_pred:(np.ndarray | pd.DataFrame), model_name: str):
+    mpl.rcParams['font.family'] = ['Times New Roman']
+    fig, axs = plt.subplots(1, 2, 
+        figsize=(14, 5), 
+        subplot_kw={'projection': 'ternary'}
+    )
+    # true
+    ax1 = axs[0]
+    for spine in ax1.spines.values():
+        spine.set_visible(False)
+    if isinstance(ab_true, np.ndarray):
+        ax1.scatter(ab_true[:, 0], ab_true[:, 1], ab_true[:, 2])
+    elif isinstance(ab_true, pd.DataFrame):
+        ax1.scatter(ab_true['npv_fraction'], ab_true['gv_fraction'], ab_true['soil_fraction'])
+    else:
+        raise Exception("Unclear input format.")
+    position = 'tick1'
+    ax1.set_tlabel('npv_fraction', fontsize=14)
+    ax1.set_llabel('gv_fraction', fontsize=14)
+    ax1.set_rlabel('soil_fraction', fontsize=14)
+
+    ax1.taxis.set_label_position(position)
+    ax1.laxis.set_label_position(position)
+    ax1.raxis.set_label_position(position)
+    ax1.set_title(f'True abundances')
+    # predicted
+    ax2 = axs[1]
+    for spine in ax2.spines.values():
+        spine.set_visible(False)
+    if isinstance(ab_pred, np.ndarray):
+        ax2.scatter(ab_pred[:, 0], ab_pred[:, 1], ab_pred[:, 2])
+    elif isinstance(ab_pred, pd.DataFrame):
+        ax2.scatter(ab_pred['npv_fraction'], ab_pred['gv_fraction'], ab_preds['soil_fraction'])
+    else:
+        raise Exception("Unclear input format.")
+    position = 'tick1'
+    ax2.set_tlabel('npv_fraction', fontsize=14)
+    ax2.set_llabel('gv_fraction', fontsize=14)
+    ax2.set_rlabel('soil_fraction', fontsize=14)
+
+    ax2.taxis.set_label_position(position)
+    ax2.laxis.set_label_position(position)
+    ax2.raxis.set_label_position(position)
+    ax2.set_title(f'Abudances in output of {model_name}')
