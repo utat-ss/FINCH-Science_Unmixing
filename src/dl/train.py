@@ -19,6 +19,7 @@ def train_model(
     dtype:(torch.dtype), 
     save_dir:(str),
     model_name:(str),
+    save_artifacts:(bool)=True
 ):
     """
     This is the function which trains the critic model on ksi_train (synthesized from psi_1), then validates and tests on ksi_val and ksi_test (parts of psi_2).
@@ -37,7 +38,7 @@ def train_model(
 
     # Initial logs and losses
     model_metrics_total[0,0] = get_n_params(model)
-    model_metrics_total[0,1] = get_flops(model, i_shape=(4, 81))
+    model_metrics_total[0,1] = get_flops(model, i_shape=(4, 80))
     best_val_loss = float('inf')
 
     # Log the param amount of the critic
@@ -118,32 +119,33 @@ def train_model(
         mae_array = get_mae(pred_abundances.cpu().numpy(), abundances.cpu().numpy())
         model_metrics_total[0,2:] = np.array([test_loss.item(), r2_array[0], r2_array[1], r2_array[2], r2_array[3], mae_array[0], mae_array[1], mae_array[2], mae_array[3]])
    
-    plot_preds(
-        abundances.cpu().numpy(),
-        pred_abundances.cpu().numpy(), 
-        save_path=rf'{save_dir}\abundance_plot.svg',
-        model_name=model_name,
-    )
-    plot_metrics(
-        list(range(1, epoch + 1)),
-        model_metrics_epoch[:,:5],
-        metric_names=['Validation Loss', 'Total R2', 'GV R2', 'NPV R2', 'Soil R2'],
-        save_path=rf'{save_dir}\metrics.svg',
-        model_name=model_name
-    )
-    plot_avg_losses(
-        list(range(1, epoch + 1)),
-        model_losses_average, 
-        rf'{save_dir}\avg_losses.svg', 
-        model_name=model_name
-    )
-    # Save the test abundance array of shape (n_test_samples, 6)
-    np.savez_compressed(
-        rf'{save_dir}\test_abundances.pth',
-        pred_abundances=pred_abundances.cpu().numpy(),
-        true_abundances=abundances.cpu().numpy(),
-        orig_index=orig_index
-    )
+    if save_artifacts:
+        plot_preds(
+            abundances.cpu().numpy(),
+            pred_abundances.cpu().numpy(), 
+            save_path=rf'{save_dir}\abundance_plot.svg',
+            model_name=model_name,
+        )
+        plot_metrics(
+            list(range(1, epoch + 1)),
+            model_metrics_epoch[:,:5],
+            metric_names=['Validation Loss', 'Total R2', 'GV R2', 'NPV R2', 'Soil R2'],
+            save_path=rf'{save_dir}\metrics.svg',
+            model_name=model_name
+        )
+        plot_avg_losses(
+            list(range(1, epoch + 1)),
+            model_losses_average, 
+            rf'{save_dir}\avg_losses.svg', 
+            model_name=model_name
+        )
+        # Save the test abundance array of shape (n_test_samples, 6)
+        np.savez_compressed(
+            rf'{save_dir}\test_abundances',
+            pred_abundances=pred_abundances.cpu().numpy(),
+            true_abundances=abundances.cpu().numpy(),
+            orig_index=orig_index
+        )
     print("Testing complete")
 
     model_dict = {'losses_step': model_losses_step, 'losses_average': model_losses_average, 'metrics_epoch': model_metrics_epoch, 'metrics_total': model_metrics_total}

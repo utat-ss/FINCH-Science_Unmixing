@@ -10,10 +10,18 @@ class HyperSpectralDataset(Dataset):
     Args:
         save_path (str): The path csv was saved to
         spec_range (list[int]): An inclusive double entry list of spec range ints
+        all_spectra (bool): Whether to include all spectra or only a subset
+        start_idx (int): The starting index for selecting spectra
     """
-    def __init__(self, save_path:(str), spec_range:(list[int])):
+    def __init__(self, save_path:(str), spec_range:(list[int]), all_spectra:(bool)=True, start_idx:(int)=24):
 
         spectra, abundances, names, indices = self._vals_from_csv(save_path, spec_range)
+
+        if not all_spectra:
+            spectra = spectra[start_idx:]
+            abundances = abundances[start_idx:]
+            names = names[start_idx:]
+            indices = indices[start_idx:]
 
         self.spectra = spectra
         self.abundances = abundances
@@ -80,9 +88,9 @@ def get_inf_iterator(dataloader:(DataLoader)) -> Iterator:
 
     return cycle(dataloader)
 
-def get_data(save_path:(str), spec_range:(list[int]), seed:(int)=3169, n_train:(int)=1500, n_val:(int)=100, n_test:(int)=123, batch_size:(int)=8, num_workers:(int)=4, prefetch_factor:(int)=20) -> HyperSpectralDataset:
+def get_data(save_path:(str), spec_range:(list[int]), seed:(int)=3169, n_train:(int)=1500, n_val:(int)=100, n_test:(int)=123, batch_size:(int)=8, num_workers:(int)=4, prefetch_factor:(int)=20, all_spectra:(bool)=True, start_idx:(int)=24) -> list[Iterator, Iterator, Iterator]:
 
-    ds = HyperSpectralDataset(save_path, spec_range)
+    ds = HyperSpectralDataset(save_path, spec_range, all_spectra, start_idx)
 
     # Split indices
     generator = torch.Generator().manual_seed(seed)
