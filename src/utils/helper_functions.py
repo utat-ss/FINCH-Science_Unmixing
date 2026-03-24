@@ -61,8 +61,8 @@ def simple_histogram(data, title="Title", x_label="x-axis" ,y_label='y-axis', bi
     ax.set_title(title)
     ax.hist(data,bins=bins)
 
-# Copied from DL's plotting.py file
-def plot_preds(ab_true:(np.ndarray), ab_pred:(np.ndarray), save_path:(str), model_name:(str), npv_bestfit:(bool)=True) -> None:
+
+def plot_preds(ab_true:(np.ndarray | pd.DataFrame), ab_pred:(np.ndarray | pd.DataFrame), save_path:(str), model_name:(str), npv_bestfit:(bool)=True) -> None:
     """
     Function to plot predicted vs true abundances for three classes. Optionally bestfits for the npv.
 
@@ -73,6 +73,10 @@ def plot_preds(ab_true:(np.ndarray), ab_pred:(np.ndarray), save_path:(str), mode
         model_name (str): The name of the model that was used
         npv_bestfit (bool): If True, use bestfit for NPV predictions
     """
+    if isinstance(ab_true, pd.DataFrame):
+        ab_true = ab_true.to_numpy()
+    if isinstance(ab_pred, pd.DataFrame):
+        ab_pred = ab_pred.to_numpy()
     assert (type(ab_true) is np.ndarray) and (type(ab_pred) is np.ndarray), "ab_true and ab_pred must be numpy arrays"
     assert ab_true.shape == ab_pred.shape, "ab_true and ab_pred must have the same shape"
 
@@ -88,14 +92,14 @@ def plot_preds(ab_true:(np.ndarray), ab_pred:(np.ndarray), save_path:(str), mode
     # The regular scatter plots
     for i, (label, color, marker) in enumerate(zip(labels, colors, markers)):
         plt.scatter(
-            ab_true[:, i],
-            ab_pred[:, i],
-            label=label,
-            alpha=0.6,
-            edgecolor='k',
-            color=color,
-            marker=marker,
-            zorder=2
+                ab_true[:, i],
+                ab_pred[:, i],
+                label=label,
+                alpha=0.6,
+                edgecolor='k',
+                color=color,
+                marker=marker,
+                zorder=2
             )
 
     # Bestfit for npv
@@ -104,12 +108,12 @@ def plot_preds(ab_true:(np.ndarray), ab_pred:(np.ndarray), save_path:(str), mode
         x_fit = np.linspace(0, 1, 100)
         y_fit = m * x_fit + c
         plt.plot(
-            x_fit,
-            y_fit,
-            color='darkgoldenrod',
-            linestyle='--',
-            label='NPV Bestfit',
-            zorder=3
+                x_fit,
+                y_fit,
+                color='darkgoldenrod',
+                linestyle='--',
+                label='NPV Bestfit',
+                zorder=3
             )
 
     plt.plot([0, 1], [0, 1], 'k--', zorder=1)
