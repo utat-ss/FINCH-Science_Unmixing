@@ -36,9 +36,9 @@ def load_frozen(config:(dict), statedict_path:(str), model_type:(str)) -> nn.Mod
     
     # Depending on the model, unfreezes
 
-    # We unfreeze last 9 components, which means 4 components per 2 last layers, and also 1 output layer
+    # We unfreeze last 1 output layer
     if model_type == 'MLP':
-        for module in list(model.layers.children())[-9:]:
+        for module in list(model.layers.children())[-1:]:
             for param in module.parameters():
                 param.requires_grad = True
 
