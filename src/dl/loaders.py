@@ -41,6 +41,11 @@ def load_frozen(config:(dict), statedict_path:(str), model_type:(str)) -> nn.Mod
         for module in list(model.layers.children())[-1:]:
             for param in module.parameters():
                 param.requires_grad = True
+            
+        for module in model.modules():
+            if isinstance(module, nn.BatchNorm1d):
+                for param in module.parameters():
+                    param.requires_grad = True
 
     # We unfreeze the final nn.Linear module in the sequential container
     elif model_type == 'CNN':
