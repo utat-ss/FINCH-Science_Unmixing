@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 
 import numpy as np
+import copy
 
 from src.dl.metric import get_n_params, get_flops, get_r2, get_mae
 from src.dl.plotting import plot_preds, plot_avg_losses, plot_metrics, plot_train_losses, pareto_plot
@@ -19,7 +20,8 @@ def train_model(
     dtype:(torch.dtype), 
     save_dir:(str),
     model_name:(str),
-    save_artifacts:(bool)=True
+    save_artifacts:(bool)=True,
+    fine_tuning:(bool)=False
 ):
     """
     This is the function which trains the critic model on ksi_train (synthesized from psi_1), then validates and tests on ksi_val and ksi_test (parts of psi_2).
@@ -41,6 +43,15 @@ def train_model(
     model_metrics_total[0,1] = get_flops(model, i_shape=(4, 80))
     best_val_loss = float('inf')
 
+    if fine_tuning:
+        # If fine tuning is enabled, we first forward prop 5 epochs worth of batches to calibrate batchnorm stats, in case it has been used
+        model.train()
+        for _ in range(n_tb_epoch * 5):
+            batch = next(iter_train)
+            spectrum = batch['spectrum'].to(device=device, dtype=dtype)
+            _ = model(spectrum)
+        print(f"Initial fine tuning complete, with {n_tb_epoch*5} batches")
+
     # Log the param amount of the critic
     counter=0
     for epoch in range(1, n_epoch + 1):
@@ -48,6 +59,11 @@ def train_model(
         ### TRAINING STEP ###
         # Set the critic in training mode
         model.train()
+
+        if fine_tuning:
+            for module in model.modules():
+                if isinstance(module, nn.BatchNorm1d):
+                    module.eval()
 
         for _ in range(n_tb_epoch):
             # Get the batch and unpack it
@@ -95,10 +111,11 @@ def train_model(
         # Save the critic if it is the best as per loss
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(model.state_dict(), rf'{save_dir}\model_weights.pth')
-            best_model_state = model.state_dict()
+            best_model_state = copy.deepcopy(model.state_dict())
         print(f"Epoch {epoch}/{n_epoch} complete. Train Loss: {model_losses_average[epoch-1,0]:.6f}, Val Loss: {model_losses_average[epoch-1,1]:.6f}")
 
+
+    torch.save(best_model_state, rf'{save_dir}\model_weights.pth')
     print("Training complete, starting testing")
     ### TESTING STEP ###
     # Load the best model

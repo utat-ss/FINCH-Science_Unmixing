@@ -88,7 +88,7 @@ def get_inf_iterator(dataloader:(DataLoader)) -> Iterator:
 
     return cycle(dataloader)
 
-def get_data(save_path:(str), spec_range:(list[int]), seed:(int)=3169, n_train:(int)=1500, n_val:(int)=100, n_test:(int)=123, batch_size:(int)=8, num_workers:(int)=4, prefetch_factor:(int)=20, all_spectra:(bool)=True, start_idx:(int)=24) -> list[Iterator, Iterator, Iterator]:
+def get_data(save_path:(str), spec_range:(list[int]), seed:(int)=3169, n_train:(int)=1500, n_val:(int)=100, n_test:(int)=123, batch_size:(int)=8, num_workers:(int)=4, prefetch_factor:(int)=20, all_spectra:(bool)=True, start_idx:(int)=24, SNV:(bool)=False) -> list[Iterator, Iterator, Iterator]:
 
     ds = HyperSpectralDataset(save_path, spec_range, all_spectra, start_idx)
 
@@ -99,11 +99,16 @@ def get_data(save_path:(str), spec_range:(list[int]), seed:(int)=3169, n_train:(
     val_idx = indices[n_train:n_train+n_val]
     test_idx = indices[n_train+n_val:]
 
-    # Apply statnorm, using only training data stats
-    train_spectra = ds.spectra[train_idx]
-    train_mean = train_spectra.mean(dim=0, keepdim=True)
-    train_std = train_spectra.std(dim=0, keepdim=True)
-    ds.spectra = (ds.spectra - train_mean) / torch.clamp(train_std, min=1e-8)
+    # Apply statnorm, using only training data stats 
+    if not SNV:
+        train_spectra = ds.spectra[train_idx]
+        train_mean = train_spectra.mean(dim=0, keepdim=True)
+        train_std = train_spectra.std(dim=0, keepdim=True)
+        ds.spectra = (ds.spectra - train_mean) / torch.clamp(train_std, min=1e-8)
+    if SNV:
+        means = ds.spectra.mean(dim=1, keepdim=True)
+        stds = ds.spectra.std(dim=1, keepdim=True)
+        ds.spectra = (ds.spectra - means) / torch.clamp(stds, min=1e-8)
 
     # Create sub-datasets
     ds_train = Subset(ds, train_idx)
