@@ -376,22 +376,13 @@ def evaluate_model(predicted_value: np.ndarray, true_value: np.ndarray, p: bool 
     rmse_npv = np.sqrt(np.mean((true_value[:, NPV_COLUMN] - predicted_value[:, NPV_COLUMN]) ** 2))
     r2_npv = r2_score(true_value[:, NPV_COLUMN], predicted_value[:, NPV_COLUMN])
     r2 = r2_score(true_value, predicted_value)
-    ss_res = np.sum((predicted_value - true_value) ** 2)
-    ss_tot = np.sum((true_value - true_value.mean(axis=0)) ** 2)  # per-column mean
-    r2_y_eq_x = 1 - ss_res / ss_tot
-
-    ss_res = np.sum((predicted_value[:, NPV_COLUMN] - true_value[:, NPV_COLUMN]) ** 2)
-    ss_tot = np.sum((true_value[:, NPV_COLUMN] - true_value[:, NPV_COLUMN].mean()) ** 2)
-    r2_y_eq_x_npv = 1 - ss_res / ss_tot
 
     if p:
         print(f"RMSE: {rmse:.4f}")
         print(f"RMSE (NPV): {rmse_npv:.4f}")
         print(f"R²: {r2:.4f}")
         print(f"R² (NPV): {r2_npv:.4f}")
-        print(f"R² (y = x): {r2_y_eq_x:.4f}")
-        print(f"R² (y = x) (NPV): {r2_y_eq_x_npv:.4f}")
-    return (rmse, rmse_npv, r2_npv, r2, r2_y_eq_x, r2_y_eq_x_npv)
+    return (rmse, rmse_npv, r2_npv, r2)
 
 # =================== PLOT MODEL HELPER ======================
 
