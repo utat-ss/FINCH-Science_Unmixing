@@ -9,16 +9,10 @@ To perform both unmixing and determine requirements, the Unmixing sub-team of th
 - Classical Machine Learning-based:
     - K-Nearest-Neighbors (KNN)
     - Random Forest (RF)
-    - Fully Constrained Direct Optimizatin via Least Squares (FCLS)
+    - Linear Regression (LinReg)
 - Statistical Learning-based:
     - Frequentist Multiple Linear Regression (MLR)
-    - Bayesian Linear Regression with Gaussian Priors, with linear basis function (BLR-G)
     - Bayesian Linear Regression with Dirichlet Priors, with linear basis function (BLR-D-Lin)
-    - Bayesian Linear Regression with Dirichlet Priors, with non-linear basis functions:
-        - With exponential basis (BLR-D-Exp)
-        - With logarithmic basis (BLR-D-Log)
-        - With quadratic basis (BLR-D-Quad)
-        - With cubic basis (BLR-D-Cub)
 - Deep Learning-based:
     - Multi-Layered Perceptron (MLP)
     - Convolutional Neural Network (CNN)
@@ -59,26 +53,10 @@ The code is licensed under MIT License.
 For questions regarding the codebase, the paper, or reproduction of results, please reach out to **Ege Artan**, the Science Lead of FINCH at the time of development for this code and paper:
 * **LinkedIn:** [Ege Artan](https://www.linkedin.com/in/ege-artan/)
 * **GitHub:** [@enatrage](https://github.com/enatrage)
-You can also reach out to **Zoe Augspach**, the Unmixing Lead at the Science team:
+You can also reach out to **Zoe Augspach**, the Unmixing Specialist at the Science team:
 * **LinkedIn:** [Zoe Augspach](https://www.linkedin.com/in/zoe-a-165055319/)
 * **Github:** [@Zoe-Au](https://github.com/Zoe-Au)
 
 ### Found a Bug?
 If you encounter any issues with the code or have feature requests, please check if the issue has already been reported. If not, feel free to open a new issue on our repository:
 * [Report a Bug or Issue](https://github.com/utat-space/FINCH-Science_SyntheticData/issues)
-
-## Project Structure
-```text
-.
-├── data/
-│   ├── simpler_data_rwc.csv
-│   └── atmospheric/
-├── runs/
-│   └── dl/
-├── src/
-│   ├── dl
-│   ├── mlr
-│   └── rf
-├── .gitignore
-├── LICENSE
-└── README.md

@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "UTAT FINCH Mission: Hyperspectral Unmixing Models for Lab and Atmospherically Simulated Data"
+version: 1.0.0
+date-released: 2026-03-30
+authors:
+  - family-names: "Augspach"
+    given-names: "Zoe"
+    orcid: "https://orcid.org/0009-0003-2465-4359"
+    affiliation: "University of Toronto"
+  - family-names: "Akopian"
+    given-names: "Andrei"
+    orcid: "https://orcid.org/0009-0007-5594-2061"
+    affiliation: "University of Toronto"
+  - family-names: "Graham"
+    given-names: "Zara"
+    orcid: "https://orcid.org/0009-0001-6760-1439"
+    affiliation: "University of Toronto"
+  - family-names: "Pavlov"
+    given-names: "Fedor"
+    orcid: "https://orcid.org/0009-0007-8281-4727"
+    affiliation: "University of Toronto"
+  - family-names: "Artan"
+    given-names: "Ege"
+    orcid: "https://orcid.org/0009-0009-3882-1991"
+    affiliation: "University of Toronto"
+  - family-names: "Tal-Siegel"
+    given-names: "Noam"
+    orcid: "https://orcid.org/0009-0003-1381-3692"
+    affiliation: "University of Toronto"
+  - family-names: "Uygun"
+    given-names: "Kemal Emirhan"
+    orcid: "https://orcid.org/0009-0006-1891-4697"
+    affiliation: "University of Toronto"
+repository-code: "https://github.com/utat-ss/FINCH-Science_Unmixing"
+abstract: >-
+  This codebase includes all the source code, configuration files, and intermediary scripts that were used for the submitted ISPRS Archives publication. The codebase has extensive scripts to train, test, and validate the developed hyperspectral unmixing algorithms on both lab and atmospherically simulated data.
