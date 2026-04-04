@@ -62,7 +62,7 @@ def simple_histogram(data, title="Title", x_label="x-axis" ,y_label='y-axis', bi
     ax.hist(data,bins=bins)
 
 
-def plot_preds(ab_true:(np.ndarray | pd.DataFrame), ab_pred:(np.ndarray | pd.DataFrame), save_path:(str), model_name:(str), npv_bestfit:(bool)=True) -> None:
+def plot_preds(ab_true:(np.ndarray | pd.DataFrame), ab_pred:(np.ndarray | pd.DataFrame), save_path:(str | None), model_name:(str), npv_bestfit:(bool)=True) -> None:
     """
     Function to plot predicted vs true abundances for three classes. Optionally bestfits for the npv.
 
@@ -123,7 +123,8 @@ def plot_preds(ab_true:(np.ndarray | pd.DataFrame), ab_pred:(np.ndarray | pd.Dat
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig(save_path, format='svg')
+    if save_path is not None:
+        plt.savefig(save_path, format='svg')
     plt.show()
 
 def ternary_abundances(ab_true:(np.ndarray | pd.DataFrame), ab_pred:(np.ndarray | pd.DataFrame), model_name: str):
