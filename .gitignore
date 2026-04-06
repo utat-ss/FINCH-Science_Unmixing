@@ -2,8 +2,6 @@
 __pycache__/
 *.py[cod]
 *.log
-*.pth
-*.pkl
 *.pt
 *.onnx
 .DS_Store
@@ -15,7 +13,7 @@ venv/
 
 # Logs and outputs
 *.log
-
-# Tensorboard logs
-runs/*
-!runs/**/*.ipynb
+runs/dl/simpler_data/fno/fno_256/model_weights.pth
+runs/dl/atmo_data/mlp_128_4layer/results/*/
+runs/dl/atmo_data/fno_32/results/*/
+runs/dl/atmo_data/cnn_32/results/*/

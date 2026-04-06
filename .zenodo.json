@@ -1,0 +1,45 @@
+{
+  "title": "UTAT FINCH Mission: Hyperspectral Unmixing Models for Lab and Atmospherically Simulated Data",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "MIT",
+  "creators": [
+    {
+      "name": "Augspach, Zoe",
+      "affiliation": "University of Toronto",
+      "orcid": "0009-0003-2465-4359"
+    },
+    {
+      "name": "Akopian, Andrei",
+      "affiliation": "University of Toronto",
+      "orcid": "0009-0007-5594-2061"
+    },
+    {
+      "name": "Graham, Zara",
+      "affiliation": "University of Toronto",
+      "orcid": "0009-0001-6760-1439"
+    },
+    {
+      "name": "Pavlov, Fedor",
+      "affiliation": "University of Toronto",
+      "orcid": "0009-0007-8281-4727"
+    },
+    {
+      "name": "Artan, Ege",
+      "affiliation": "University of Toronto",
+      "orcid": "0009-0009-3882-1991"
+    },
+    {
+      "name": "Tal-Siegel, Noam",
+      "affiliation": "University of Toronto",
+      "orcid": "0009-0003-1381-3692"
+    },
+    {
+      "name": "Uygun, Kemal Emirhan",
+      "affiliation": "University of Toronto",
+      "orcid": "0009-0006-1891-4697"
+    }
+  ],
+  "description": "<p>....</p>",
+  "version": "1.0.1"
+}
